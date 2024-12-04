@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NZWalk.API.Repositories;
 using NZWalk.Data;
+using NZWalk.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +14,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<NZWalkDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("NZWalkConnectionString")));
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>(); //Indicates that SQLRegionRepository is the implementation of IRegionRepository.
-                                                                      //This "SQLRegionRepository" can be changed to some other implementation like "InmemoryRegionRepository" based on requirement.
+                                                                      //This "SQLRegionRepository" can be changed to some other implementation like "InMemoryRegionRepository" based on requirement.
 
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
