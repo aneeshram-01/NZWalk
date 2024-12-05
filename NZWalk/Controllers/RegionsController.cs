@@ -10,6 +10,7 @@ using NZWalks.API.Models.DTO;
 
 namespace NZWalk.Controllers
 {
+    //https://localhost:portnumber/api/regions
     [Route("api/[controller]")]
     [ApiController]
     public class RegionsController : ControllerBase

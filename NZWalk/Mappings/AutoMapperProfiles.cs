@@ -12,6 +12,8 @@ namespace NZWalk.Mappings
             CreateMap<Region, RegionDto>().ReverseMap();  //ReverseMap() handles the case if the source and destinatation files need to be switched.
             CreateMap<AddRegionRequestDto, Region>().ReverseMap();
             CreateMap<UpdateRegionRequestDto, Region>().ReverseMap();
+            CreateMap<AddWalkRequestDto, Walk>().ReverseMap();
+            CreateMap<Walk, WalkDto>().ReverseMap();
         }
     }
 }
