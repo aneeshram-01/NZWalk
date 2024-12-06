@@ -40,12 +40,13 @@ namespace NZWalk.Controllers
 
         //GET Walks
         //GET: https://localhost:portnumber/api/walks
-        //GET: https://localhost:portnumber/api/walks?filterOn=Name&filterQuery=Track&sortBy=Name&isAscending=true
+        //GET: https://localhost:portnumber/api/walks?filterOn=Name&filterQuery=Track&sortBy=Name&isAscending=true&pageNumber=1&pageSize=10
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery, //Query parameters for filtering 
-                                                [FromQuery] string? sortBy, [FromQuery] bool? isAscending)     //Query parameters for sorting
+        public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,   //Query parameters for filtering 
+                                                [FromQuery] string? sortBy, [FromQuery] bool? isAscending,       //Query parameters for sorting
+                                                [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000) //Query parameters for pagination    
         {
-            var walkDomainModel = await walkRepository.GetAllAsync(filterOn, filterQuery, sortBy, isAscending ?? true);
+            var walkDomainModel = await walkRepository.GetAllAsync(filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize);
 
             return Ok(mapper.Map<List<WalkDto>>(walkDomainModel));
         }
