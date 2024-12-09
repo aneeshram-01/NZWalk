@@ -25,6 +25,9 @@ builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>(); //Indicate
                                                                       //This "SQLRegionRepository" can be changed to some other implementation like "InMemoryRegionRepository" based on requirement.
 
 builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 builder.Services.AddIdentityCore<IdentityUser>()
