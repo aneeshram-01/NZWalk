@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NZWalk.CustomActionFilters;
@@ -48,7 +49,10 @@ namespace NZWalk.Controllers
         {
             var walkDomainModel = await walkRepository.GetAllAsync(filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize);
 
+            throw new Exception("New exception");
+
             return Ok(mapper.Map<List<WalkDto>>(walkDomainModel));
+
         }
 
         //GET Walk by Id

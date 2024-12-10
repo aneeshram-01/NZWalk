@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.Json;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,19 +22,23 @@ namespace NZWalk.Controllers
         private readonly NZWalkDbContext dbContext; //Not needed since it is implementd in Repository
         private readonly IRegionRepository regionRepository;
         private readonly IMapper mapper;
+        private readonly ILogger<RegionsController> logger;
 
-        public RegionsController(NZWalkDbContext dbContext, IRegionRepository regionRepository, IMapper mapper)
+        public RegionsController(NZWalkDbContext dbContext, IRegionRepository regionRepository, IMapper mapper, ILogger<RegionsController> logger)
         {
             this.dbContext = dbContext; //Not needed since it is implementd in Repository
             this.regionRepository = regionRepository;
             this.mapper = mapper;
+            this.logger = logger;
         }
+
         //GET ALL REGIONS
         //GET: https://localhost:portnumber/api/regions
         [HttpGet]
         [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetAll()
         {
+            
             //Get data from Database - Domain Models
             var regionsDomain = await regionRepository.GetAllAsync(); //Async call to Repository which in turn implements call to database
 
@@ -54,7 +59,16 @@ namespace NZWalk.Controllers
             var regionsDto = mapper.Map<List<RegionDto>>(regionsDomain);
 
             //Return Dtos
+            logger.LogInformation($"Finished GetAllRegions request with data: {JsonSerializer.Serialize(regionsDomain)}");
             return Ok(regionsDto);
+
+            /*
+            //Logging
+            logger.LogInformation("GetAllRegions action method was invoked"); //For MinimumLevel.Information()
+            logger.LogWarning("This is a warning log"); //For MinimumLevel.Warning()
+            logger.LogError("This is an error log");  //For MinimumLevel.Warning()
+            */
+            
         }
 
 
