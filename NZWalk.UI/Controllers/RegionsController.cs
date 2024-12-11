@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
@@ -68,11 +70,75 @@ namespace NZWalk.UI.Controllers
 
             if (response is not null)
             { 
-                return RedirectToAction("Index", "regions");
+                return RedirectToAction("Index", "Regions");
             }
 
             return View();
 		}
 
-    }
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var client = httpClientFactory.CreateClient();
+
+            var response = await client.GetFromJsonAsync<RegionDto>($"https://localhost:7278/api/regions/{id.ToString()}");
+
+            if (response is not null) 
+            { 
+                return View(response);
+            }
+
+			return View(null);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(RegionDto request)
+        {
+            var client = httpClientFactory.CreateClient();
+
+			var httpRequestMessage = new HttpRequestMessage()
+			{
+				Method = HttpMethod.Put,
+				RequestUri = new Uri($"https://localhost:7278/api/regions/{request.Id}"),
+				Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
+			};
+
+			var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+
+			httpResponseMessage.EnsureSuccessStatusCode();
+
+			var response = await httpResponseMessage.Content.ReadFromJsonAsync<RegionDto>();
+
+			if (response is not null)
+			{
+				return RedirectToAction("Edit", "Regions");
+			}
+
+			return View();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Delete(RegionDto request)
+        {
+            try
+            {
+                var client = httpClientFactory.CreateClient();
+
+                var httpResponseMessage = await client.DeleteAsync($"https://localhost:7278/api/regions/{request.Id}");
+
+                httpResponseMessage.EnsureSuccessStatusCode();
+
+                return RedirectToAction("Index", "Regions");
+			}
+            catch (Exception ex)
+            {
+
+				//Log exception
+			}
+
+			return View("Edit");
+		}
+
+
+	}
 }
